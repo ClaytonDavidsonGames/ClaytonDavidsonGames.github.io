@@ -1,0 +1,9 @@
+#player {
+    z-index: 10; 
+    background-color: blueviolet; 
+    width: 20px; 
+    height: 20px; 
+    position: absolute; 
+    left: 150px;
+    top: 0px;
+}
