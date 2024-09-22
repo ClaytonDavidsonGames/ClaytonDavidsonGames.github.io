@@ -9,18 +9,18 @@ class EPlayerInputs {
 }
 
 class Action {
-    constructor(key, eventName, isContinuous=true, isActive=false) {
+    constructor(key, eventName, isActive=false) {
         this.key = key;
         this.eventName = eventName;
-        this.isContinuous = isContinuous;
+        this.startEventName = this.eventName + "start";
+        this.activeEventName = this.eventName + "active";
+        this.endEventName = this.eventName + "end";
         this.isActive = isActive;
-        this.actionEvent = new Event(eventName);
-    }
-
-    ActionCompleted() {
-        if (!this.isContinuous) {
-            this.isActive = false;
-        }
+        this.startTrigger = true;
+        this.endTrigger = true;
+        this.actionEventStart = new Event(this.startEventName);
+        this.actionEventActive = new Event(this.activeEventName);
+        this.actionEventEnd = new Event(this.endEventName);
     }
 }
 
@@ -38,6 +38,12 @@ let playerActions = [
 
 const ModifyActionStatus = (action, state) => {
     action.isActive = state;
+    if (state) {
+        if (!action.endTrigger) action.endTrigger = true;
+    }
+    else {
+        if (!action.startTrigger) action.startTrigger = true;
+    }
 };
 
 const onKeyDown = (e => {

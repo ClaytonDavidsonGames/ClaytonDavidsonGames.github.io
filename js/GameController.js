@@ -8,26 +8,64 @@ import { checkForVerticalCollision } from "./CollisionManager.js"
 
 let player = new Player();
 
-let eventName = playerActions[EPlayerInputs.MOVELEFT].eventName;
-player.playerHTML.addEventListener(eventName, () => {
-    player.MoveLeft();
+//Move left input events
+player.playerHTML.addEventListener(
+    playerActions[EPlayerInputs.MOVELEFT].activeEventName, () => {
+    player.MoveLeft(true);
 });
-
-eventName = playerActions[EPlayerInputs.MOVERIGHT].eventName;
-player.playerHTML.addEventListener(eventName, () => {
-    player.MoveRight();
+player.playerHTML.addEventListener(
+    playerActions[EPlayerInputs.MOVELEFT].endEventName, () => {
+    player.MoveLeft(false);
 });
+player.playerHTML.setAttribute(
+    playerActions[EPlayerInputs.MOVELEFT].activeEventName, true
+);
+player.playerHTML.setAttribute(
+    playerActions[EPlayerInputs.MOVELEFT].endEventName, true
+);
 
-eventName = playerActions[EPlayerInputs.JUMP].eventName;
-player.playerHTML.addEventListener(eventName, () => {
+//Move right input events
+player.playerHTML.addEventListener(
+    playerActions[EPlayerInputs.MOVERIGHT].activeEventName, () => {
+    player.MoveRight(true);
+});
+player.playerHTML.addEventListener(
+    playerActions[EPlayerInputs.MOVERIGHT].endEventName, () => {
+    player.MoveRight(false);
+});
+player.playerHTML.setAttribute(
+    playerActions[EPlayerInputs.MOVERIGHT].activeEventName, true
+);
+player.playerHTML.setAttribute(
+    playerActions[EPlayerInputs.MOVERIGHT].endEventName, true
+);
+
+//Jump input events
+player.playerHTML.addEventListener(
+    playerActions[EPlayerInputs.JUMP].startEventName, () => {
     player.Jump();
 });
+player.playerHTML.setAttribute(
+    playerActions[EPlayerInputs.JUMP].startEventName, true
+);
 
+//Dispatch input events start, active, end
 const dispatchPlayerInputEvents = (_ => {
     playerActions.forEach(action => {
         if (action.isActive) {
-            player.playerHTML.dispatchEvent(action.actionEvent);
-            action.ActionCompleted();
+                if (action.startTrigger &&
+                    player.playerHTML.getAttribute(action.startEventName)) {
+                player.playerHTML.dispatchEvent(action.actionEventStart);
+                action.startTrigger = false;
+            }
+            else if (player.playerHTML.getAttribute(action.activeEventName)) {
+                player.playerHTML.dispatchEvent(action.actionEventActive);
+            }
+        }
+        else if (action.endTrigger &&
+                player.playerHTML.getAttribute(action.endEventName)) {
+            player.playerHTML.dispatchEvent(action.actionEventEnd)
+            action.endTrigger = false;
         }
     });
 });

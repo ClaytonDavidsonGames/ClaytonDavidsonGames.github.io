@@ -15,22 +15,33 @@ class Player {
         return playerHTML;
     }
 
-    MoveLeft() {
-        let playerBounds = this.playerHTML.getBoundingClientRect();
-        this.playerHTML.style.left = (
-            playerBounds.left 
-            + window.scrollX 
-            - this.moveSpeed
-        ).toString() + "px";
+    MoveLeft(bActive) {
+        if (bActive) {
+
+            let playerBounds = this.playerHTML.getBoundingClientRect();
+            this.playerHTML.style.left = (
+                playerBounds.left 
+                + window.scrollX 
+                - this.moveSpeed
+            ).toString() + "px";
+        }
+        else {
+
+        }
     }
 
-    MoveRight () {
-        let playerBounds = this.playerHTML.getBoundingClientRect();
-        this.playerHTML.style.left = (
-            playerBounds.left 
-            + window.scrollX 
-            + this.moveSpeed
-        ).toString() + "px";
+    MoveRight (bActive) {
+        if (bActive) {
+            let playerBounds = this.playerHTML.getBoundingClientRect();
+            this.playerHTML.style.left = (
+                playerBounds.left 
+                + window.scrollX 
+                + this.moveSpeed
+            ).toString() + "px";
+        }
+        else {
+
+        }
     }
 
     Jump() {
