@@ -1,5 +1,8 @@
 import { EPlayerInputs, playerActions } from "./InputController.js"
-import { RigidBody } from "./RigidBody.js"
+import { 
+    RigidBody, 
+    Vector
+} from "./RigidBody.js"
 
 class Player {
     constructor() {
@@ -17,39 +20,35 @@ class Player {
 
     MoveLeft(bActive) {
         if (bActive) {
-
-            let playerBounds = this.playerHTML.getBoundingClientRect();
-            this.playerHTML.style.left = (
-                playerBounds.left 
-                + window.scrollX 
-                - this.moveSpeed
-            ).toString() + "px";
+            this.rigidBody.SetXVelocity(-this.moveSpeed);
         }
         else {
-
+            this.rigidBody.SetXVelocity(0);
         }
     }
 
     MoveRight (bActive) {
         if (bActive) {
-            let playerBounds = this.playerHTML.getBoundingClientRect();
-            this.playerHTML.style.left = (
-                playerBounds.left 
-                + window.scrollX 
-                + this.moveSpeed
-            ).toString() + "px";
+            this.rigidBody.SetXVelocity(this.moveSpeed);
         }
         else {
-
+            this.rigidBody.SetXVelocity(0);
         }
     }
 
     Jump() {
+        this.rigidBody.AddYVelocity(-15);
+    }
+
+    UpdatePlayerPhysics() {
+        this.rigidBody.UpdatePosition();
+    }
+
+    UpdatePlayerSprite() {
+        let position = this.rigidBody.GetPosition();
         let playerBounds = this.playerHTML.getBoundingClientRect();
-        this.playerHTML.style.top = (
-            playerBounds.top 
-            - 10
-        ).toString() + "px";
+            this.playerHTML.style.left = position.x.toString() + "px";
+            this.playerHTML.style.top = position.y.toString() + "px";
     }
 }
 

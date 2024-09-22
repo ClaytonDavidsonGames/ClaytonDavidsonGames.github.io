@@ -27,11 +27,11 @@ class Vector {
 
 class RigidBody {
     constructor(width, height) {
-        this.width = width;
-        this.height = height;
+        this.bounds = new Vector(width, height);
         this.position = new Vector();
         this.velocity = new Vector();
-        this.maxVelocity = new Vector(100, 100);
+        this.maxVelocity = new Vector(10, 10);
+        this.bIsGrounded = false;
     }
 
     AddVelocity(vel) {
@@ -43,9 +43,54 @@ class RigidBody {
         this.velocity.Set(newVelocity);
     }
 
+    AddXVelocity(xVel) {
+        this.velocity.Add(new Vector(xVel, 0));
+        this.velocity.Clamp(this.maxVelocity);
+    }
+
+    SetXVelocity(newXVelocity) {
+        this.velocity.Set(new Vector(newXVelocity, this.velocity.y));
+    }
+
+    AddYVelocity(yVel) {
+        this.velocity.Add(new Vector(0, yVel));
+        this.velocity.Clamp(this.maxVelocity);
+    }
+
+    SetYVelocity(newYVelocity) {
+        this.velocity.Set(new Vector(this.velocity.x, newYVelocity));
+    }
+
+    GetVelocity() {
+        return this.velocity;
+    }
+
     UpdatePosition() {
         this.position.Add(this.velocity);
     }
+
+    SetPosition(newPosition) {
+        this.position = newPosition;
+    }
+
+    SetXPosition(xPos) {
+        this.position.Set(new Vector(xPos, this.position.y));
+    }
+
+    SetYPosition(yPos) {
+        this.position.Set(new Vector(this.position.x, yPos));
+    }
+    
+    GetPosition() {
+        return this.position;
+    }
+
+    GetBounds() {
+        return this.bounds;
+    }
 }
 
-export { RigidBody }
+export { 
+    RigidBody, 
+    Vector
+}

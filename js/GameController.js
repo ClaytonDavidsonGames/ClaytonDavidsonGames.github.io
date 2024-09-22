@@ -3,6 +3,7 @@ import {
     EPlayerInputs, 
     playerActions 
 } from "./InputController.js"
+import { Vector } from "./RigidBody.js"
 import { Player } from "./Player.js"
 import { checkForVerticalCollision } from "./CollisionManager.js"
 
@@ -71,21 +72,27 @@ const dispatchPlayerInputEvents = (_ => {
 });
 
 const checkForCollisions = (_ => {
-    return checkForVerticalCollision(player.playerHTML);
+    return checkForVerticalCollision(player.rigidBody);
 });
 
 const gameTick = (_ => {
     dispatchPlayerInputEvents();
-    if (!checkForCollisions()) {
-        let playerBounds = player.playerHTML.getBoundingClientRect();
-        player.playerHTML.style.top = (
-            playerBounds.top 
-            + window.scrollY 
-            + player.moveSpeed
-        ).toString() + "px";
+    player.UpdatePlayerPhysics();
+    player.UpdatePlayerSprite();
+    if (!player.rigidBody.bIsGrounded) {
+        player.rigidBody.AddYVelocity(1);
+    }
 
-        if (playerBounds.top >= 750) {
-            player.playerHTML.style.top = window.scrollY.toString() + "px";
+    if (!checkForCollisions()) {
+        let playerPos = player.rigidBody.GetPosition();
+
+        if (playerPos.y >= 750) {
+            player.rigidBody.SetPosition(
+                new Vector(
+                    playerPos.x, 
+                    0
+                )
+            );
         }
     }
 });

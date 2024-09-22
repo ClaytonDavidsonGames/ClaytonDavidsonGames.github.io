@@ -1,16 +1,28 @@
-const checkForVerticalCollision = (htmlObj, rigidBody) => {
+import { 
+    RigidBody, 
+    Vector
+} from "./RigidBody.js"
+
+const checkForVerticalCollision = (rigidBody) => {
     let platforms = document.getElementsByClassName("platform");
-    let objBounds = htmlObj.getBoundingClientRect();
+    let objPosition = rigidBody.GetPosition();
+    let objBounds = rigidBody.GetBounds();
+    let objVelocity = rigidBody.GetVelocity();
     for (const platform of platforms) {
         let platformBounds = platform.getBoundingClientRect();
 
-        if (objBounds.bottom + 5 >= platformBounds.top &&
-            objBounds.bottom <= platformBounds.top &&
-            objBounds.right >= platformBounds.left &&
-            objBounds.left <= platformBounds.right
+        if (objPosition.y + objBounds.y + objVelocity.y >= platformBounds.top &&
+            objPosition.y + objBounds.y <= platformBounds.top &&
+            objPosition.x + objBounds.x >= platformBounds.left &&
+            objPosition.x <= platformBounds.right
         ) {
-            htmlObj.style.top = (platformBounds.top - objBounds.height + window.scrollY).toString() + "px";
+            rigidBody.SetYPosition(platformBounds.top - objBounds.y);
+            rigidBody.SetYVelocity(0);
+            rigidBody.bIsGrounded = true;
             return true;
+        }
+        else {
+            rigidBody.bIsGrounded = false;
         }
     };
     return false;
