@@ -1,4 +1,18 @@
-#background {
+#game_zone {
     height: 2000px; 
-    background-image: linear-gradient(to bottom, cyan, blue);
+    width: 2000px;  
+    background-image: url("../img/grid_ref.jpg");
+    background-repeat: repeat;
+}
+
+#game_canvas {
+    height: 2000px;
+    width: 2000px;
+    position: absolute;
+    top: 0px;
+    left: 0px;
+}
+
+body {
+    margin: 0px;
 }

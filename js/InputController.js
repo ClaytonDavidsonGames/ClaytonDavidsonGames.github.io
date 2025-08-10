@@ -1,11 +1,11 @@
 class EPlayerInputs {
-    static #_MOVELEFT = 0;
-    static #_MOVERIGHT = 1;
-    static #_JUMP = 2;
+    static #_ROTATELEFT = 0;
+    static #_ROTATERIGHT = 1;
+    static #_ADDTHRUST = 2;
 
-    static get MOVELEFT() { return this.#_MOVELEFT;}
-    static get MOVERIGHT() { return this.#_MOVERIGHT;}
-    static get JUMP() { return this.#_JUMP;}
+    static get ROTATELEFT() { return this.#_ROTATELEFT;}
+    static get ROTATERIGHT() { return this.#_ROTATERIGHT;}
+    static get ADDTHRUST() { return this.#_ADDTHRUST;}
 }
 
 class Action {
@@ -25,15 +25,15 @@ class Action {
 }
 
 let keyCodes = [
-    "a", //MOVE LEFT
-    "d", //MOVE RIGHT
-    "w" //JUMP
+    "a", //ROTATE LEFT
+    "d", //ROTATE RIGHT
+    "w" //ADD THRUST
 ]
 
 let playerActions = [
-    new Action(keyCodes[EPlayerInputs.MOVELEFT], "moveleft"),
-    new Action(keyCodes[EPlayerInputs.MOVERIGHT], "moveright"),
-    new Action(keyCodes[EPlayerInputs.JUMP], "jump")
+    new Action(keyCodes[EPlayerInputs.ROTATELEFT], "rotateleft"),
+    new Action(keyCodes[EPlayerInputs.ROTATERIGHT], "rotateright"),
+    new Action(keyCodes[EPlayerInputs.ADDTHRUST], "addthrust")
 ];
 
 const ModifyActionStatus = (action, state) => {
@@ -47,6 +47,7 @@ const ModifyActionStatus = (action, state) => {
 };
 
 const onKeyDown = (e => {
+    console.log(e.key);
     if (keyCodes.indexOf(e.key) != -1) {
         ModifyActionStatus(playerActions[keyCodes.indexOf(e.key)], true);
     }

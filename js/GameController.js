@@ -5,49 +5,60 @@ import {
 } from "./InputController.js"
 import { Vector } from "./RigidBody.js"
 import { Player } from "./Player.js"
+import { Asteroid } from "./Asteroid.js"
 import { checkForVerticalCollision } from "./CollisionManager.js"
+import { UpdateViewportPosition } from "./Viewport.js"
 
-let player = new Player();
+let game_canvas = document.getElementById("game_canvas");
+let game_zone = document.getElementById("game_zone");
+let player = new Player(game_canvas);
 
-//Move left input events
-player.playerHTML.addEventListener(
-    playerActions[EPlayerInputs.MOVELEFT].activeEventName, () => {
-    player.MoveLeft(true);
+//Rotate left input events
+game_zone.addEventListener(
+    playerActions[EPlayerInputs.ROTATELEFT].activeEventName, () => {
+    player.RotateLeft(true);
 });
-player.playerHTML.addEventListener(
-    playerActions[EPlayerInputs.MOVELEFT].endEventName, () => {
-    player.MoveLeft(false);
+game_zone.addEventListener(
+    playerActions[EPlayerInputs.ROTATELEFT].endEventName, () => {
+    player.RotateLeft(false);
 });
-player.playerHTML.setAttribute(
-    playerActions[EPlayerInputs.MOVELEFT].activeEventName, true
+game_zone.setAttribute(
+    playerActions[EPlayerInputs.ROTATELEFT].activeEventName, true
 );
-player.playerHTML.setAttribute(
-    playerActions[EPlayerInputs.MOVELEFT].endEventName, true
-);
-
-//Move right input events
-player.playerHTML.addEventListener(
-    playerActions[EPlayerInputs.MOVERIGHT].activeEventName, () => {
-    player.MoveRight(true);
-});
-player.playerHTML.addEventListener(
-    playerActions[EPlayerInputs.MOVERIGHT].endEventName, () => {
-    player.MoveRight(false);
-});
-player.playerHTML.setAttribute(
-    playerActions[EPlayerInputs.MOVERIGHT].activeEventName, true
-);
-player.playerHTML.setAttribute(
-    playerActions[EPlayerInputs.MOVERIGHT].endEventName, true
+game_zone.setAttribute(
+    playerActions[EPlayerInputs.ROTATELEFT].endEventName, true
 );
 
-//Jump input events
-player.playerHTML.addEventListener(
-    playerActions[EPlayerInputs.JUMP].startEventName, () => {
-    player.Jump();
+//Rotate right input events
+game_zone.addEventListener(
+    playerActions[EPlayerInputs.ROTATERIGHT].activeEventName, () => {
+    player.RotateRight(true);
 });
-player.playerHTML.setAttribute(
-    playerActions[EPlayerInputs.JUMP].startEventName, true
+game_zone.addEventListener(
+    playerActions[EPlayerInputs.ROTATERIGHT].endEventName, () => {
+    player.RotateRight(false);
+});
+game_zone.setAttribute(
+    playerActions[EPlayerInputs.ROTATERIGHT].activeEventName, true
+);
+game_zone.setAttribute(
+    playerActions[EPlayerInputs.ROTATERIGHT].endEventName, true
+);
+
+//Add thrust input events
+game_zone.addEventListener(
+    playerActions[EPlayerInputs.ADDTHRUST].activeEventName, () => {
+    player.AddThrust(true);
+});
+game_zone.addEventListener(
+    playerActions[EPlayerInputs.ADDTHRUST].endEventName, () => {
+    player.AddThrust(false);
+});
+game_zone.setAttribute(
+    playerActions[EPlayerInputs.ADDTHRUST].activeEventName, true
+);
+game_zone.setAttribute(
+    playerActions[EPlayerInputs.ADDTHRUST].endEventName, true
 );
 
 //Dispatch input events start, active, end
@@ -55,56 +66,29 @@ const dispatchPlayerInputEvents = (_ => {
     playerActions.forEach(action => {
         if (action.isActive) {
                 if (action.startTrigger &&
-                    player.playerHTML.getAttribute(action.startEventName)) {
-                player.playerHTML.dispatchEvent(action.actionEventStart);
+                    game_zone.getAttribute(action.startEventName)) {
+                game_zone.dispatchEvent(action.actionEventStart);
                 action.startTrigger = false;
             }
-            else if (player.playerHTML.getAttribute(action.activeEventName)) {
-                player.playerHTML.dispatchEvent(action.actionEventActive);
+            else if (game_zone.getAttribute(action.activeEventName)) {
+                game_zone.dispatchEvent(action.actionEventActive);
             }
         }
         else if (action.endTrigger &&
-                player.playerHTML.getAttribute(action.endEventName)) {
-            player.playerHTML.dispatchEvent(action.actionEventEnd)
+                game_zone.getAttribute(action.endEventName)) {
+            game_zone.dispatchEvent(action.actionEventEnd)
             action.endTrigger = false;
         }
     });
-});
-
-const checkForCollisions = (_ => {
-    return checkForVerticalCollision(player.rigidBody);
 });
 
 const gameTick = (_ => {
     dispatchPlayerInputEvents();
     player.UpdatePlayerPhysics();
     player.UpdatePlayerSprite();
-    if (!player.rigidBody.bIsGrounded) {
-        player.rigidBody.AddYVelocity(1);
-    }
+    player.CheckPlayerWrapScreen();
 
-    if (!checkForCollisions()) {
-        let playerPos = player.rigidBody.GetPosition();
-
-        if (playerPos.y >= 750) {
-            player.rigidBody.SetPosition(
-                new Vector(
-                    playerPos.x, 
-                    0
-                )
-            );
-        }
-    }
+    UpdateViewportPosition(player);
 });
 
 setInterval(gameTick, tickTime);
-
-for (let i = 0; i < 10; i++) {
-    let platformHTML = document.createElement("div");
-    platformHTML.className = "platform";
-    platformHTML.style.width = "100px";
-    platformHTML.style.height = "25px";
-    platformHTML.style.left = Math.floor(Math.random() * 500).toString() + "px";
-    platformHTML.style.top = Math.floor(Math.random() * 1000).toString() + "px";
-    document.getElementsByTagName("body")[0].appendChild(platformHTML);
-}
