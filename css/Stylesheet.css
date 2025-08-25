@@ -16,3 +16,63 @@
 body {
     margin: 0px;
 }
+
+.nabla-font {
+  font-family: "Nabla", system-ui;
+  font-optical-sizing: auto;
+  font-weight: 400;
+  font-style: normal;
+  font-variation-settings:
+    "EDPT" 100,
+    "EHLT" 12;
+}
+
+.orbitron-font {
+  font-family: "Orbitron", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 400;
+  font-style: normal;
+}
+
+.silkscreen-regular {
+  font-family: "Silkscreen", sans-serif;
+  font-weight: 400;
+  font-style: normal;
+}
+
+.silkscreen-bold {
+  font-family: "Silkscreen", sans-serif;
+  font-weight: 700;
+  font-style: normal;
+}
+
+.portal {
+  -webkit-animation: spinZ 15s infinite linear;
+  animation: spinZ 15s infinite linear;
+}
+
+a:hover .portal {
+  -webkit-animation: spinZ 5s infinite linear;
+  animation: spinZ 5s infinite linear;
+}
+
+a, u {
+  text-decoration: none;
+}
+
+@-webkit-keyframes spinZ
+{  
+0%   {-webkit-transform: rotateZ(0deg) scale(1); -webkit-transform-origin: 0% 0% 5;}  
+25%   {-webkit-transform: rotateZ(90deg) scale(0.95); -webkit-transform-origin: 0% 0% 5;}  
+50%   {-webkit-transform: rotateZ(180deg) scale(1); -webkit-transform-origin: 0% 0% 5;}  
+75%   {-webkit-transform: rotateZ(270deg) scale(1.05); -webkit-transform-origin: 0% 0% 5;}  
+100% {-webkit-transform: rotateZ(360deg) scale(1); -webkit-transform-origin: 0% 0% 5;}  
+}  
+@keyframes spinZ
+{  
+0%   {transform: rotateZ(0deg) scale(1); transform-origin: 0% 0% 5;}  
+25%   {transform: rotateZ(90deg) scale(0.95); transform-origin: 0% 0% 5;}  
+50%   {transform: rotateZ(180deg) scale(1); transform-origin: 0% 0% 5;}  
+75%   {transform: rotateZ(270deg) scale(1.05); transform-origin: 0% 0% 5;}  
+100% {transform: rotateZ(360deg) scale(1); transform-origin: 0% 0% 5;}  
+}

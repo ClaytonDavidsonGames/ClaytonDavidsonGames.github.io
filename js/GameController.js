@@ -1,94 +1,46 @@
-import { tickTime } from "./GlobalVars.js"
-import { 
-    EPlayerInputs, 
-    playerActions 
-} from "./InputController.js"
-import { Vector } from "./RigidBody.js"
-import { Player } from "./Player.js"
-import { Asteroid } from "./Asteroid.js"
-import { checkForVerticalCollision } from "./CollisionManager.js"
-import { UpdateViewportPosition } from "./Viewport.js"
+let imageLibrary = {
+    player: 0,
+    background: 1,
+}
+let player, asteroid;
 
-let game_canvas = document.getElementById("game_canvas");
-let game_zone = document.getElementById("game_zone");
-let player = new Player(game_canvas);
+function gameInit()
+{
+    // called once after the engine starts up
+    // setup the game
+    cameraScale = 2;
+    setObjectMaxSpeed(100);
 
-//Rotate left input events
-game_zone.addEventListener(
-    playerActions[EPlayerInputs.ROTATELEFT].activeEventName, () => {
-    player.RotateLeft(true);
-});
-game_zone.addEventListener(
-    playerActions[EPlayerInputs.ROTATELEFT].endEventName, () => {
-    player.RotateLeft(false);
-});
-game_zone.setAttribute(
-    playerActions[EPlayerInputs.ROTATELEFT].activeEventName, true
-);
-game_zone.setAttribute(
-    playerActions[EPlayerInputs.ROTATELEFT].endEventName, true
-);
-
-//Rotate right input events
-game_zone.addEventListener(
-    playerActions[EPlayerInputs.ROTATERIGHT].activeEventName, () => {
-    player.RotateRight(true);
-});
-game_zone.addEventListener(
-    playerActions[EPlayerInputs.ROTATERIGHT].endEventName, () => {
-    player.RotateRight(false);
-});
-game_zone.setAttribute(
-    playerActions[EPlayerInputs.ROTATERIGHT].activeEventName, true
-);
-game_zone.setAttribute(
-    playerActions[EPlayerInputs.ROTATERIGHT].endEventName, true
-);
-
-//Add thrust input events
-game_zone.addEventListener(
-    playerActions[EPlayerInputs.ADDTHRUST].activeEventName, () => {
-    player.AddThrust(true);
-});
-game_zone.addEventListener(
-    playerActions[EPlayerInputs.ADDTHRUST].endEventName, () => {
-    player.AddThrust(false);
-});
-game_zone.setAttribute(
-    playerActions[EPlayerInputs.ADDTHRUST].activeEventName, true
-);
-game_zone.setAttribute(
-    playerActions[EPlayerInputs.ADDTHRUST].endEventName, true
-);
-
-//Dispatch input events start, active, end
-const dispatchPlayerInputEvents = (_ => {
-    playerActions.forEach(action => {
-        if (action.isActive) {
-                if (action.startTrigger &&
-                    game_zone.getAttribute(action.startEventName)) {
-                game_zone.dispatchEvent(action.actionEventStart);
-                action.startTrigger = false;
-            }
-            else if (game_zone.getAttribute(action.activeEventName)) {
-                game_zone.dispatchEvent(action.actionEventActive);
-            }
-        }
-        else if (action.endTrigger &&
-                game_zone.getAttribute(action.endEventName)) {
-            game_zone.dispatchEvent(action.actionEventEnd)
-            action.endTrigger = false;
-        }
-    });
-});
-
-const gameTick = (_ => {
-    dispatchPlayerInputEvents();
-    player.UpdatePlayerPhysics();
-    player.UpdatePlayerSprite();
-    player.CheckPlayerWrapScreen();
-
-    UpdateViewportPosition(player);
-});
-
-setInterval(gameTick, tickTime);
+    player = new Player(vec2(0, 0));
+    //asteroid = new Asteroid(vec2(50, 50));
+}
+ 
+function gameUpdate()
+{
+    // called every frame at 60 frames per second
+    // handle input and update the game state
+}
+ 
+function gameUpdatePost()
+{
+    // called after physics and objects are updated
+    // setup camera and prepare for render
+    cameraPos = player.pos;
+}
+ 
+function gameRender()
+{
+    // called before objects are rendered
+    // draw any background effects that appear behind objects
+    const bkg = tile(0, 1500, 1);
+    drawTile(vec2(0, 0), vec2(1500, 1115), bkg);
+}
+ 
+function gameRenderPost()
+{
+    // called after objects are rendered
+    // draw effects or hud that appear above all objects
+}
+ 
+// Startup LittleJS Engine
+engineInit(gameInit, gameUpdate, gameUpdatePost, gameRender, gameRenderPost, ['/img/SpriteSheet.png', '/img/Space.png']);

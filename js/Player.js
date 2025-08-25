@@ -1,65 +1,61 @@
-import { EPlayerInputs, playerActions } from "./InputController.js"
-import { 
-    RigidBody, 
-    Vector
-} from "./RigidBody.js"
-
-class Player {
-    constructor(game_canvas) {
-        this.thrustSpeed = 0.075;
-        this.turnSpeed = 3;
-        this.game_canvas = game_canvas
-        this.playerSize = new Vector(32, 32);
-        this.rigidBody = new RigidBody(this.playerSize.x, this.playerSize.y);
+class Player extends EngineObject 
+{
+    constructor(pos, size, tileInfo, angle)
+    {
+        super(pos, size, tileInfo, angle);
+        // setup object
+        this.PLAYER_SIZE = 32;
+        this.MAX_SPEED = 8;
+        this.TURN_SPEED = 3.2 * (Math.PI / 180);
+        this.THRUST = 0.12;
+        this.mass = 2;
+        this.damping = 0.995;
+        this.size = vec2(this.PLAYER_SIZE, this.PLAYER_SIZE);
+        this.tileInfo = tile(0, this.PLAYER_SIZE, imageLibrary.player);
+        this.setCollision(true, true);
     }
-
-    RotateLeft(bActive) {
-        if (bActive) {
-            this.rigidBody.SetRotation(this.rigidBody.rotation - this.turnSpeed);
+ 
+    update()
+    {
+        // update object physics and position
+        super.update();
+        if (keyIsDown("KeyW")) {
+            this.applyForwardThrust();
+        }
+        if (keyIsDown("KeyA")) {
+            this.rotateShip(-1);
+        }
+        if (keyIsDown("KeyD")) {
+            this.rotateShip();
         }
     }
 
-    RotateRight(bActive) {
-        if (bActive) {
-            this.rigidBody.SetRotation(this.rigidBody.rotation + this.turnSpeed);
+    applyForwardThrust() {
+        let xVel = Math.sin(this.angle) * this.THRUST;
+        let yVel = Math.cos(this.angle) * this.THRUST;
+
+        this.velocity = this.velocity.add(new vec2(xVel, yVel));
+        let totalSpeed = this.velocity.length();
+        if (totalSpeed > this.MAX_SPEED) {
+            this.velocity = new vec2(
+                (this.MAX_SPEED / totalSpeed) * this.velocity.x, 
+                (this.MAX_SPEED / totalSpeed) * this.velocity.y
+            );
         }
     }
 
-    AddThrust(bActive) {
-        if (bActive) {
-            this.rigidBody.AddForwardVelocity(new Vector(this.thrustSpeed, 0));
-        }
+    rotateShip(direction = 1) {
+        this.angle += direction * this.TURN_SPEED;
+    }
+ 
+    render()
+    {
+        // draw object as a sprite
+        super.render();
+        this.drawSprite();
     }
 
-    UpdatePlayerPhysics() {
-        this.rigidBody.UpdateRotation();
-        this.rigidBody.UpdateVelocity();
-        this.rigidBody.UpdatePosition();
-    }
-
-    UpdatePlayerSprite() {
-        let position = this.rigidBody.GetPosition();
-        let rotation = this.rigidBody.GetRotation();
-
-        if (this.game_canvas.getContext) {
-            const canvas = this.game_canvas.getContext("2d");
-            canvas.translate(position.x + (this.playerSize.x / 2), position.y + (this.playerSize.y / 2));
-            canvas.rotate((Math.PI / 180) * rotation);
-            
-            const img = new Image();
-            img.addEventListener("load", () => {
-                canvas.scale(32/200, 32/200);
-                canvas.drawImage(img, 0, 0);
-            });
-            img.src = "./img/Ship.png";
-
-            canvas.setTransform(1, 0, 0, 1, 0, 0);
-        }
-    }
-
-    CheckPlayerWrapScreen() {
-        this.rigidBody.CheckWrapScreen();
+    drawSprite() {
+        drawTile(this.pos, this.size, this.tileInfo, new Color(1, 1, 1, 1), this.angle, false, new Color(0, 0, 0, 0), true);
     }
 }
-
-export { Player }

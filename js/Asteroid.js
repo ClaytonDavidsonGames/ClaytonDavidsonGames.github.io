@@ -1,54 +1,36 @@
-import { 
-    RigidBody, 
-    Vector
-} from "./RigidBody.js"
-
-class Asteroid {
-    constructor() {
+class Asteroid extends EngineObject 
+{
+    constructor(pos, size, tileInfo, angle)
+    {
+        super(pos, size, tileInfo, angle);
+        // setup object
         this.MIN_SIZE = 25;
         this.MAX_SIZE = 50;
         this.MIN_SPEED = 0.5;
-        this.MAX_SPEED = 3;
-        this.size = this.MIN_SIZE + (Math.random() * (this.MAX_SIZE - this.MIN_SIZE));
-        this.speed = this.MIN_SPEED + (Math.random() * (this.MAX_SPEED - this.MIN_SPEED));
-        this.rigidBody = new RigidBody(this.size, this.size);
-        this.asteroidHTML = this.CreateAsteroidHTML();
-
-        this.rigidBody.SetRotation(Math.round(Math.random() * 360));
-        this.rigidBody.AddForwardVelocity(new Vector(this.speed, 0));
+        this.MAX_SPEED = 1;
+        this.sideLength = this.MIN_SIZE + (Math.random() * (this.MAX_SIZE - this.MIN_SIZE));
+        this.angle = (Math.random() * 360) * (Math.PI / 180);
+        this.applyForwardVelocity(this.MIN_SPEED + (Math.random() * (this.MAX_SPEED - this.MIN_SPEED)));
+        this.mass = this.sideLength / 10;
+        this.size = vec2(this.sideLength, this.sideLength);
+        this.setCollision(true, true);
+    }
+ 
+    update()
+    {
+        // update object physics and position
+        super.update();
     }
 
-    CreateAsteroidHTML() {
-        const asteroidHTML = document.createElement("div");
-        asteroidHTML.class = "asteroid";
-        asteroidHTML.style.width = this.size + "px";
-        asteroidHTML.style.height = this.size + "px";
-        console.log(this.size + "px");
-        asteroidHTML.style.backgroundColor = `rgb(${Math.round(Math.random() * 255)}, ${Math.round(Math.random() * 255)}, ${Math.round(Math.random() * 255)})`;
-        asteroidHTML.style.position = "absolute";
-        asteroidHTML.style.zIndex = 1;
-        document.getElementsByTagName("body")[0].appendChild(asteroidHTML);
-        console.log(asteroidHTML);
-        return asteroidHTML;
+    applyForwardVelocity(forwardSpeed) {
+        let xVel = Math.sin(this.angle) * forwardSpeed;
+        let yVel = Math.cos(this.angle) * forwardSpeed;
+        this.velocity = this.velocity.add(new vec2(xVel, yVel));
     }
 
-    UpdateAsteroidPhysics() {
-        this.rigidBody.UpdateRotation();
-        this.rigidBody.UpdateVelocity();
-        this.rigidBody.UpdatePosition();
-    }
-
-    UpdateAsteroidSprite() {
-        let position = this.rigidBody.GetPosition();
-        let asteroidBounds = this.asteroidHTML.getBoundingClientRect();
-        this.asteroidHTML.style.left = position.x.toString() + "px";
-        this.asteroidHTML.style.top = position.y.toString() + "px";
-        this.asteroidHTML.style.rotate = this.rigidBody.rotation + "deg";
-    }
-
-    CheckAsteroidWrapScreen() {
-        this.rigidBody.CheckWrapScreen();
+    render()
+    {
+        // draw object as a sprite
+        super.render();
     }
 }
-
-export { Asteroid }
