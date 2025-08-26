@@ -51,6 +51,10 @@ body {
   animation: spinZ 15s infinite linear;
 }
 
+.portal-frame {
+  animation: floatY 15s infinite ease;
+}
+
 a:hover .portal {
   -webkit-animation: spinZ 5s infinite linear;
   animation: spinZ 5s infinite linear;
@@ -75,4 +79,17 @@ a, u {
 50%   {transform: rotateZ(180deg) scale(1); transform-origin: 0% 0% 5;}  
 75%   {transform: rotateZ(270deg) scale(1.05); transform-origin: 0% 0% 5;}  
 100% {transform: rotateZ(360deg) scale(1); transform-origin: 0% 0% 5;}  
+}
+
+@-webkit-keyframes floatY
+{  
+0%   {-webkit-transform: translate(0px, -5px); -webkit-transform-origin: 0% 0% 5;}  
+50%   {-webkit-transform: translate(0px, 5px); -webkit-transform-origin: 0% 0% 5;}  
+100% {-webkit-transform: translate(0px, -5px); -webkit-transform-origin: 0% 0% 5;}  
+}
+@keyframes floatY
+{  
+0%   {transform: translate(0px, -5px); transform-origin: 0% 0% 5;}  
+50%   {transform: translate(0px, 5px); transform-origin: 0% 0% 5;}  
+100% {transform: translate(0px, -5px); transform-origin: 0% 0% 5;}  
 }
